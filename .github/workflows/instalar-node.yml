@@ -1,0 +1,34 @@
+name: Node Install and Sequential Job
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  install-node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify Node installation
+        run: |
+          node -v
+          npm -v
+
+  second-job:
+    needs: install-node
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print confirmation
+        run: echo "Node.js se instaló correctamente, ahora se ejecuta el segundo trabajo."
+
+      - name: Run sample Node script
+        run: |
+          echo "console.log('¡Hola desde el segundo job!')" > app.js
+          node app.js
